@@ -1,1 +1,82 @@
-# prism-app
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prism - AI Asistan</title>
+    <style>
+        :root { --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; --accent: #3b82f6; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { background: var(--panel); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+        h1 { margin: 0; font-size: 1.2rem; color: var(--accent); }
+        .modes { display: flex; gap: 5px; overflow-x: auto; padding: 5px 0; }
+        .mode-btn { background: #334155; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; white-space: nowrap; }
+        .mode-btn.active { background: var(--accent); }
+        .chat-container { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { background: var(--panel); padding: 10px 15px; border-radius: 10px; max-width: 80%; }
+        .message.user { align-self: flex-end; background: var(--accent); }
+        .input-area { padding: 15px; background: var(--panel); display: flex; gap: 10px; border-top: 1px solid #334155; }
+        input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; }
+        button.send { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Prism</h1>
+        <div class="modes" id="modeSelector">
+            <button class="mode-btn active" data-mode="normal">Normal</button>
+            <button class="mode-btn" data-mode="iyi">İyi</button>
+            <button class="mode-btn" data-mode="cok-iyi">Çok İyi</button>
+            <button class="mode-btn" data-mode="ultra">Ultra</button>
+            <button class="mode-btn" data-mode="ultra-plus">Ultra+</button>
+            <button class="mode-btn" data-mode="ultra-max">Ultra++</button>
+        </div>
+    </header>
+
+    <div class="chat-container" id="chatContainer">
+        <div class="message">Merhaba! Ben Prism. Hangi düşünce modunda çalışmamı istersin?</div>
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Prism'e bir şeyler yaz...">
+        <button class="send" id="sendBtn">Gönder</button>
+    </div>
+
+    <script>
+        const buttons = document.querySelectorAll('.mode-btn');
+        let currentMode = 'normal';
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                buttons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentMode = btn.getAttribute('data-mode');
+            });
+        });
+
+        const sendBtn = document.getElementById('sendBtn');
+        const userInput = document.getElementById('userInput');
+        const chatContainer = document.getElementById('chatContainer');
+
+        sendBtn.addEventListener('click', () => {
+            const text = userInput.value.trim();
+            if(!text) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.textContent = text;
+            chatContainer.appendChild(userMsg);
+            userInput.value = '';
+
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message';
+                aiMsg.textContent = `[${currentMode.toUpperCase()} Modu] Yanıt alındı: ${text}`;
+                chatContainer.appendChild(aiMsg);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 500);
+        });
+    </script>
+</body>
+</html>
